@@ -14,12 +14,6 @@ group :development, :test do
   end
 end
 
-git 'git://github.com/rails/rails.git' do
-  gem 'railties'
-  gem 'activerecord'
-  gem 'activemodel' # for globalize3
-end
-
 # For globalize3 supporting rails4
 gem 'globalize3', :github => 'svenfuchs/globalize3', :branch => 'rails4'
 # forking off airblade/paper_trail to use the rails4 branch.
