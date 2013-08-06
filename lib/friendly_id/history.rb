@@ -117,6 +117,21 @@ method.
     # all historic slugs for that model.
     module SlugGenerator
 
+      def generate
+        unless sluggable.new_record?
+          sluggable_class = friendly_id_config.model_class.base_class
+          pkey            = sluggable_class.primary_key
+          value           = sluggable.send pkey
+          
+          histo_query = Slug.where(:sluggable_type => sluggable_class.to_s).where("sluggable_id = ?", value)
+          histo_query = histo_query.where("slug = ? OR slug LIKE ?", normalized, wildcard).order("LENGTH(slug) ASC, slug ASC")
+          slug_from_history = histo_query.first
+          return slug_from_history.slug unless slug_from_history.nil?
+        end
+        
+        conflict? ? self.next : normalized
+      end
+
       private
 
       def conflicts
